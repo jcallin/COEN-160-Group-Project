@@ -27,6 +27,6 @@ public class RMOS extends JPanel implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		
 	}
 }

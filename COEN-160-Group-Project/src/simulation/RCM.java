@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 public class RCM extends JPanel implements ActionListener{
 	private String stringId, stringLocation;
 	ArrayList<Item> items;
+	Map<Item, Double> dict = new HashMap();
 	JLabel location, id, fullBox;
 	JComboBox itemSelector;
 	private int itemWeight;
@@ -35,6 +38,7 @@ public class RCM extends JPanel implements ActionListener{
 		items = new ArrayList<Item>();
 		items.add(new Item("Aluminum", 3.0));
 		items.add(new Item("Copper", 3.0));
+		items.add(new Item("Plastic", 5.5));
 		
 		id = new JLabel(_id);
 		id.setPreferredSize(new Dimension(150, 100));

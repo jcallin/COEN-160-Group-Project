@@ -1,6 +1,7 @@
 package simulation;
 
 import java.awt.Dimension;
+
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,18 +12,22 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+@SuppressWarnings("serial")
 public class RMOSLeft extends JPanel implements ActionListener{
 	
 	// Login components
 	JTextField userNameInput;
 	JLabel loggedInAs;
 	JButton loginButton;
+	
 	// Adding new item components
 	JTextField newItemName, newItemPrice;
 	JButton newItemButton;
+	
 	// Changing existing item components
 	JTextField  changeItemName, changeItemPrice;
 	JButton changeItemButton;
+	
 	// Get RCM info components
 	JTextField RCMIdInput;
 	JButton getRCMInfoButton;
