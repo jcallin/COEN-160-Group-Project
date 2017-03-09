@@ -1,13 +1,14 @@
 package simulation;
 
 import java.awt.Dimension;
-
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -16,6 +17,7 @@ import javax.swing.SwingConstants;
 public class RMOSLeft extends JPanel implements ActionListener{
 	
 	// Login components
+	ArrayList<String> users = new ArrayList<String>();
 	JTextField userNameInput;
 	JLabel loggedInAs;
 	JButton loginButton;
@@ -38,6 +40,9 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		setPreferredSize(new Dimension(400,450));
 		
+		// Add default admins
+		users.add("Julian");
+		users.add("Jack");
 		// Create inputs for logging in
 		userNameInput = new JTextField("Enter Username");
 		userNameInput.setPreferredSize(new Dimension(300, 30));
@@ -89,7 +94,14 @@ public class RMOSLeft extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == this.loginButton){
-			// Add an item
+			System.out.println(this.userNameInput.getText());
+			for(int i = 0; i < this.users.size(); i++){
+				if(this.users.get(i).equals(this.userNameInput.getText())){
+					JOptionPane.showMessageDialog(null, "Welcome " + this.users.get(i));
+					return;
+				}
+			}
+			JOptionPane.showMessageDialog(null, "Unknown user");
 		}
 		if (e.getSource() == this.newItemButton){
 			// Add an item
