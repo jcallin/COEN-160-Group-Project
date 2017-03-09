@@ -190,6 +190,9 @@ public class RCM extends JPanel implements ActionListener{
 				this.currentMoneyOwed = 0;
 				// Write the transactions list to a file
 				writeSessionToBuffer(this.currentSession);
+				
+				//Switch button text back to Start Session once a session is completed
+				this.sessionToggle.setText("Start Session");
 			}
 		}
 	}

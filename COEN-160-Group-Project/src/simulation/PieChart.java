@@ -7,7 +7,7 @@ import java.util.Observer;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class PieChart extends JPanel implements Observer {
+public class PieChart extends JPanel /*implements Observer*/ {
 	private RCM rcm;
 	
 	public PieChart(RCM _rcm){
@@ -21,12 +21,12 @@ public class PieChart extends JPanel implements Observer {
 	}
 	
 	private void drawPieChart(Graphics g){
-		double totalWeight = getTotalWeight();
+		//double totalWeight = getTotalWeight();
 		double percentage = 0.0;
 		double startAngle = 0.0;
 		double arcAngle = 0.0;
 		
-		for(int i = 0; i < this.rcm.items.size(); i++){
+		for(int i = 0; i < this.rcm.dict.size(); i++){
 			
 		}
 		
@@ -35,9 +35,4 @@ public class PieChart extends JPanel implements Observer {
 	private void drawLegend(Graphics g){
 		
 	}
-	
-	private double getTotalWeight(){
-
-	}
-	
 }
