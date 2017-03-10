@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,9 +25,9 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 @SuppressWarnings("serial")
-public class RCM extends JPanel implements ActionListener{
+public class RCM extends JPanel implements ActionListener {
 	private String stringId, stringLocation, currentSession;
-	protected ArrayList<Item> items;
+	private static ArrayList<Item> items;
 	private Map<Item, Double> dict = new HashMap<Item, Double>();
 	private JLabel location, id, fullBox;
 	private JComboBox<String> itemSelector;
@@ -34,6 +35,7 @@ public class RCM extends JPanel implements ActionListener{
 	private JLabel itemWeightLabel;
 	private JButton add, sessionToggle;
 	private boolean inSession;
+	private JTable table;
 	
 	public RCM(String _id, String _location){
 		super(new FlowLayout(FlowLayout.LEFT));
@@ -73,12 +75,12 @@ public class RCM extends JPanel implements ActionListener{
 		// Create a container to hold the ScrollPane (which holds the table)
 		JPanel tableContainer = new JPanel();
 		// Create the table to display the accepted Items
-		JTable table = new JTable() {
+		this.table = new JTable()  {
 		    public boolean isCellEditable(int row, int column)
 		    {
 		      return false; //This causes all cells to be not editable
 		    }
-		  };
+		  }; 
 		  
 		// Create a list from the ArrayList of Items so we can use the list to populate the table
 		ArrayList<Object[]> list = new ArrayList<Object[]>();
@@ -130,8 +132,12 @@ public class RCM extends JPanel implements ActionListener{
 		this.add(sessionToggle);
 	}
 	
+	//Method to add an item -- changes: item, item selector, table
 	public void addItem(Item i){
 		items.add(i);
+		itemSelector.addItem(i.getName());
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.addRow(new Object[]{i.getName(), i.getValue()});
 	}
 	
 	@Override

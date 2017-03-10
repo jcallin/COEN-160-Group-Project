@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Observable;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -133,8 +134,8 @@ public class RMOSLeft extends JPanel implements ActionListener{
 			}
 			else{
 				newItem = new Item(newItemName.getText(), Double.parseDouble(newItemPrice.getText()), Math.random()*10);
-				rcm1.addItem(newItem);
-				rcm2.addItem(newItem);
+				this.rcm1.addItem(newItem);
+				this.rcm2.addItem(newItem);
 			}
 		}
 		else if (e.getSource() == this.changeItemButton){
