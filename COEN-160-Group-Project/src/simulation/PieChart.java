@@ -26,9 +26,9 @@ public class PieChart extends JPanel /*implements Observer*/ {
 		double startAngle = 0.0;
 		double arcAngle = 0.0;
 		
-		for(int i = 0; i < this.rcm.dict.size(); i++){
-			
-		}
+		//for(int i = 0; i < this.rcm.dict.size(); i++){
+		//	
+		//}
 		
 	}
 	

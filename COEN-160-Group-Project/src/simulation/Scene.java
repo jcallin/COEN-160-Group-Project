@@ -26,18 +26,17 @@ class Scene extends JFrame {
 		container.setLayout(new FlowLayout());
          
         // Create the RMOS and RCM components
-        RMOS = new RMOS();
-        RCM1 = new RCM("1", "Bangkok");
+		RCM1 = new RCM("1", "Bangkok");
         RCM2 = new RCM("2", "The Moon");
+		RMOS = new RMOS(RCM1, RCM2);
          
         //Add buttons to the experiment layout
         container.add(RMOS);
         container.add(RCM1);
         container.add(RCM2);
-
+        
         //Left to right component orientation is selected by default
-        container.setComponentOrientation(
-                ComponentOrientation.LEFT_TO_RIGHT);
+        container.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         
         setVisible(true);
     }

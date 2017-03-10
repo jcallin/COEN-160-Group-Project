@@ -2,11 +2,13 @@ package simulation;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -16,33 +18,43 @@ import javax.swing.SwingConstants;
 @SuppressWarnings("serial")
 public class RMOSLeft extends JPanel implements ActionListener{
 	
+	//RCMs that the RMOS is managing
+	private RCM rcm1;
+	private RCM rcm2;
+	
 	// Login components
-	ArrayList<String> users = new ArrayList<String>();
-	JTextField userNameInput;
-	JLabel loggedInAs;
-	JButton loginButton;
+	private ArrayList<String> users = new ArrayList<String>();
+	private JTextField userNameInput;
+	private JLabel loggedInAs;
+	private JButton loginButton;
+	private boolean loggedIn;
 	
 	// Adding new item components
-	JTextField newItemName, newItemPrice;
-	JButton newItemButton;
+	private JTextField newItemName, newItemPrice;
+	private JButton newItemButton;
+	private Item newItem;
 	
 	// Changing existing item components
-	JTextField  changeItemName, changeItemPrice;
-	JButton changeItemButton;
+	// private JComboBox<String> itemSelector; -- Possibly have a selector to chose which item to change price of
+	private JTextField  changeItemName, changeItemPrice;
+	private JButton changeItemButton;
 	
 	// Get RCM info components
-	JTextField RCMIdInput;
-	JButton getRCMInfoButton;
+	private JTextField RCMIdInput;
+	private JButton getRCMInfoButton;
 	
-	public RMOSLeft(){
+	public RMOSLeft(RCM r1, RCM r2){
 		// Create box layout inside for each row of buttons
 		//setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		setPreferredSize(new Dimension(400,450));
 		
+		rcm1 = r1;
+		rcm2 = r2;
+		
 		// Add default admins
-		users.add("Julian");
-		users.add("Jack");
+		users.add("Julian Callin");
+		users.add("Jack Roof");
 		// Create inputs for logging in
 		userNameInput = new JTextField("Enter Username");
 		userNameInput.setPreferredSize(new Dimension(300, 30));
@@ -95,22 +107,51 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		// TODO Auto-generated method stub
 		if (e.getSource() == this.loginButton){
 			System.out.println(this.userNameInput.getText());
-			for(int i = 0; i < this.users.size(); i++){
-				if(this.users.get(i).equals(this.userNameInput.getText())){
-					JOptionPane.showMessageDialog(null, "Welcome " + this.users.get(i));
-					return;
-				}
+			if(loginButton.getText() == "Log Out"){
+				loggedIn = false;
+				JOptionPane.showMessageDialog(null, "Logged Out");
+				loginButton.setText("Log In");
+				this.userNameInput.setText("Enter username");
+				loggedInAs.setText("Not logged in");
 			}
-			JOptionPane.showMessageDialog(null, "Unknown user");
+			else{
+				for(int i = 0; i < this.users.size(); i++){
+					if(this.users.get(i).equals(this.userNameInput.getText())){
+						JOptionPane.showMessageDialog(null, "Welcome " + this.users.get(i));
+						loggedInAs.setText("Currently Logged in as: " + this.userNameInput.getText());
+						loggedIn = true;
+						loginButton.setText("Log Out");
+						return;
+					}
+				}
+				JOptionPane.showMessageDialog(null, "Unknown user");
+			}
 		}
 		if (e.getSource() == this.newItemButton){
-			// Add an item
+			if(loggedIn == false){
+				JOptionPane.showMessageDialog(null, "Please login before proceeding");
+			}
+			else{
+				newItem = new Item(newItemName.getText(), Double.parseDouble(newItemPrice.getText()), Math.random()*10);
+				rcm1.addItem(newItem);
+				rcm2.addItem(newItem);
+			}
 		}
 		else if (e.getSource() == this.changeItemButton){
-			// Change the price of an item
+			if(loggedIn == false){
+				JOptionPane.showMessageDialog(null, "Please login before proceeding");
+			}
+			else{
+				// Change the price of an item
+			}
 		}
 		else if (e.getSource() == this.getRCMInfoButton){
-			// Get RCM info and display in text popup
+			if(loggedIn == false){
+				JOptionPane.showMessageDialog(null, "Please login before proceeding");
+			}
+			else {
+				// Get RCM info and display in text popup
+			}
 		}
 		
 	}

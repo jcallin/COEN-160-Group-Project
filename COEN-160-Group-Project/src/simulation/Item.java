@@ -5,6 +5,7 @@ package simulation;
 public class Item {
 	private String name;
 	private double value;
+	
 	// Upon constructor, the RMOS admin sets this from 1-10 to denote heavier items for weight generation
 	private double averageWeight;
 	

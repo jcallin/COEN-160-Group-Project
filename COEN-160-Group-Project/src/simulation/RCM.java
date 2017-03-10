@@ -26,24 +26,27 @@ import javax.swing.table.DefaultTableModel;
 @SuppressWarnings("serial")
 public class RCM extends JPanel implements ActionListener{
 	private String stringId, stringLocation, currentSession;
-	ArrayList<Item> items;
-	Map<Item, Double> dict = new HashMap();
-	JLabel location, id, fullBox;
-	JComboBox itemSelector;
+	protected ArrayList<Item> items;
+	private Map<Item, Double> dict = new HashMap<Item, Double>();
+	private JLabel location, id, fullBox;
+	private JComboBox<String> itemSelector;
 	private int itemWeight, currentMoneyOwed;
-	JLabel itemWeightLabel;
-	JButton add, sessionToggle;
+	private JLabel itemWeightLabel;
+	private JButton add, sessionToggle;
 	private boolean inSession;
 	
 	public RCM(String _id, String _location){
 		super(new FlowLayout(FlowLayout.LEFT));
+		
 		// RCM specific
 		stringId = _id;
 		stringLocation = _location;
+		
 		// Session and recycling variables
 		itemWeight = 0;
 		currentMoneyOwed = 0;
 		inSession = false;
+		
 		// This is a buffer for each transaction. When a session is ended, this gets flushed to a file
 		currentSession = new String();
 		setPreferredSize(new Dimension(600,450));
@@ -76,6 +79,7 @@ public class RCM extends JPanel implements ActionListener{
 		      return false; //This causes all cells to be not editable
 		    }
 		  };
+		  
 		// Create a list from the ArrayList of Items so we can use the list to populate the table
 		ArrayList<Object[]> list = new ArrayList<Object[]>();
 	    for (int i = 0; i < items.size(); i++) {
@@ -85,9 +89,9 @@ public class RCM extends JPanel implements ActionListener{
 	                              });
 
 	    }
+	    
 	    // Specify the data to use for the columns and the strings for the column names
-	    table.setModel(new DefaultTableModel(list.toArray(new Object[][] {}), 
-	                        new String[] {"Item", "Price"}));
+	    table.setModel(new DefaultTableModel(list.toArray(new Object[][] {}), new String[] {"Item", "Price"}));
 		// Set scrolling to only be vertical
 		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		table.setFillsViewportHeight(true);
@@ -126,7 +130,9 @@ public class RCM extends JPanel implements ActionListener{
 		this.add(sessionToggle);
 	}
 	
-	
+	public void addItem(Item i){
+		items.add(i);
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
