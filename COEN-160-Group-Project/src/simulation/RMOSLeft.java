@@ -33,7 +33,6 @@ public class RMOSLeft extends JPanel implements ActionListener{
 	// Adding new item components
 	private JTextField newItemName, newItemPrice;
 	private JButton newItemButton;
-	private Item newItem;
 	
 	// Changing existing item components
 	// private JComboBox<String> itemSelector; -- Possibly have a selector to chose which item to change price of
@@ -56,6 +55,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		// Add default admins
 		users.add("Julian Callin");
 		users.add("Jack Roof");
+		
 		// Create inputs for logging in
 		userNameInput = new JTextField("Enter Username");
 		userNameInput.setPreferredSize(new Dimension(300, 30));
@@ -133,7 +133,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(null, "Please login before proceeding");
 			}
 			else{
-				newItem = new Item(newItemName.getText(), Double.parseDouble(newItemPrice.getText()), Math.random()*10);
+				Item newItem = new Item(newItemName.getText(), Double.parseDouble(newItemPrice.getText()), Math.random()*10);
 				this.rcm1.addItem(newItem);
 				this.rcm2.addItem(newItem);
 			}
@@ -143,7 +143,17 @@ public class RMOSLeft extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(null, "Please login before proceeding");
 			}
 			else{
-				// Change the price of an item
+				if(rcm1.getRow(changeItemName.getText()) == -1){
+					JOptionPane.showMessageDialog(null, "This item does not exist");
+				}
+				else{
+					rcm1.deleteItem(changeItemName.getText());
+					rcm2.deleteItem(changeItemName.getText());
+					Item changedItem = new Item(changeItemName.getText(), Double.parseDouble(changeItemPrice.getText()), Math.random()*10);
+					rcm1.addItem(changedItem);
+					rcm2.addItem(changedItem);
+
+				}
 			}
 		}
 		else if (e.getSource() == this.getRCMInfoButton){

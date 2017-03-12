@@ -27,8 +27,8 @@ import javax.swing.table.DefaultTableModel;
 @SuppressWarnings("serial")
 public class RCM extends JPanel implements ActionListener {
 	private String stringId, stringLocation, currentSession;
-	private static ArrayList<Item> items;
-	private Map<Item, Double> dict = new HashMap<Item, Double>();
+	private ArrayList<Item> items;
+	//private Map<Item, Double> dict = new HashMap<Item, Double>();
 	private JLabel location, id, fullBox;
 	private JComboBox<String> itemSelector;
 	private int itemWeight, currentMoneyOwed;
@@ -138,6 +138,21 @@ public class RCM extends JPanel implements ActionListener {
 		itemSelector.addItem(i.getName());
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.addRow(new Object[]{i.getName(), i.getValue()});
+	}
+	
+	public int getRow(String name){
+		int row = -1;
+		for(int i = 0; i < items.size(); i++){
+			if(name == items.get(i).getName()){
+				row = i;
+			}
+		}
+		return row;
+	}
+	
+	public void deleteItem(String name){
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.removeRow(getRow(name));
 	}
 	
 	@Override
