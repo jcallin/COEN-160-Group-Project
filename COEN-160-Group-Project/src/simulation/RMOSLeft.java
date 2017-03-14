@@ -270,7 +270,21 @@ public class RMOSLeft extends JPanel implements ActionListener{
 					}
 				}
 				else if(id.equals("2")){
-
+					infoTitle.setText("Info for RCM: " + this.rcm2.getId());
+					infoId.setText("ID: " + this.rcm2.getId());
+					infoLocation.setText("Location: " + this.rcm2.getLocation_t());
+					String cMoney = new DecimalFormat("#.##").format(this.rcm2.getCurrentMoney());
+					infoCurrentMoney.setText("Current Money: $" + cMoney);
+					String cWeight = new DecimalFormat("#.##").format(this.rcm2.getCurrentWeight());
+					infoCurrentWeight.setText("Current Weight: " + cWeight);
+					String aCapacity = new DecimalFormat("#.##").format(this.rcm2.getMaxWeight()-this.rcm2.getCurrentWeight());
+					infoAvailableCapacity.setText("Available Capacity: " + aCapacity);
+					if(this.rcm1.getCurrentMoney() < 5.00){
+						JOptionPane.showMessageDialog(null, "RCM: " + this.rcm2.getId() + " money is getting low. Consider refilling.");
+					}
+					if((this.rcm1.getMaxWeight() - this.rcm1.getCurrentWeight()) < 5.00){
+						JOptionPane.showMessageDialog(null, "RCM: " + this.rcm2.getId() + " is getting full. Consider emptying.");
+					}
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "RCM " + id + " does not exist within this system");
