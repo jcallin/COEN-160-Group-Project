@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Observable;
@@ -44,7 +45,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 	
 	// Get RCM info components
 	private JLabel infoLabel;
-	private JTextField RCMIdInput;
+	private JTextField infoIdInput;
 	private JButton getRCMInfoButton;
 	
 	//RCMempty components
@@ -57,10 +58,13 @@ public class RMOSLeft extends JPanel implements ActionListener{
 	private JTextField RCMMoneyRefillId;
 	private JButton moneyRefillButton;
 	
-	//Last RCMempty components
+	//Last RCMEmpty components
 	private JLabel timeEmptyLabel;
 	private JTextField timeEmptyId;
 	private JButton timeEmptyButton;
+	
+	//Get Info Labels for output
+	private JLabel infoTitle, infoId, infoLocation, infoCurrentMoney, infoCurrentWeight, infoAvailableCapacity;
 	
 	public RMOSLeft(RCM r1, RCM r2){
 		// Create box layout inside for each row of buttons
@@ -122,12 +126,13 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		// Create inputs for getting RCM info
 		infoLabel = new JLabel("Get Info of Specific RCM: ");
 		infoLabel.setPreferredSize(new Dimension(160, 30));
-		RCMIdInput = new JTextField("ID");
-		RCMIdInput.setPreferredSize(new Dimension(80, 30));
+		infoIdInput = new JTextField("ID");
+		infoIdInput.setPreferredSize(new Dimension(80, 30));
 		getRCMInfoButton = new JButton("Get Info");
 		getRCMInfoButton.setPreferredSize(new Dimension(130, 30));
+		getRCMInfoButton.addActionListener(this);
 		this.add(infoLabel);
-		this.add(RCMIdInput);
+		this.add(infoIdInput);
 		this.add(getRCMInfoButton);
 		
 		//RCM empty components
@@ -165,6 +170,26 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		this.add(timeEmptyLabel);
 		this.add(timeEmptyId);
 		this.add(timeEmptyButton);
+		
+		//Get info Components
+		infoTitle = new JLabel("Info for RCM X", SwingConstants.CENTER);
+		infoTitle.setPreferredSize(new Dimension(375, 30));
+		infoTitle.setFont(new Font("Sans Serif", Font.ITALIC, 24));
+		infoId = new JLabel("ID: ", SwingConstants.CENTER);
+		infoId.setPreferredSize(new Dimension(100, 30));
+		infoLocation = new JLabel("Location: ", SwingConstants.CENTER);
+		infoLocation.setPreferredSize(new Dimension(150, 30));
+		infoCurrentMoney = new JLabel("Current Money: ", SwingConstants.CENTER);
+		infoCurrentMoney.setPreferredSize(new Dimension(150, 30));
+		infoCurrentWeight = new JLabel("Current Weight: ", SwingConstants.CENTER);
+		infoCurrentWeight.setPreferredSize(new Dimension(150, 30));
+		infoAvailableCapacity = new JLabel("Available Capacity: ", SwingConstants.CENTER);
+		this.add(infoTitle);
+		this.add(infoId);
+		this.add(infoLocation);
+		this.add(infoCurrentMoney);
+		this.add(infoCurrentWeight);
+		this.add(infoAvailableCapacity);
 	}
 	
 	@Override
@@ -192,6 +217,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(null, "Unknown user");
 			}
 		}
+		
 		if (e.getSource() == this.newItemButton){
 			if(loggedIn == false){
 				JOptionPane.showMessageDialog(null, "Please login before proceeding");
@@ -217,7 +243,6 @@ public class RMOSLeft extends JPanel implements ActionListener{
 					Item changedItem = new Item(changeItemName.getText(), Double.parseDouble(changeItemPrice.getText()), Math.random()*10);
 					rcm1.addItem(changedItem);
 					rcm2.addItem(changedItem);
-
 				}
 			}
 		}
@@ -225,8 +250,32 @@ public class RMOSLeft extends JPanel implements ActionListener{
 			if(loggedIn == false){
 				JOptionPane.showMessageDialog(null, "Please login before proceeding");
 			}
-			else {
-				
+			else{
+				String id = infoIdInput.getText();
+				if(id.equals("1")){
+					infoTitle.setText("Info for RCM: " + this.rcm1.getId());
+					infoId.setText("ID: " + this.rcm1.getId());
+					infoLocation.setText("Location: " + this.rcm1.getLocation_t());
+					String cMoney = new DecimalFormat("#.##").format(this.rcm1.getCurrentMoney());
+					infoCurrentMoney.setText("Current Money: $" + cMoney);
+					String cWeight = new DecimalFormat("#.##").format(this.rcm1.getCurrentWeight());
+					infoCurrentWeight.setText("Current Weight: " + cWeight);
+					String aCapacity = new DecimalFormat("#.##").format(this.rcm1.getMaxWeight()-this.rcm1.getCurrentWeight());
+					infoAvailableCapacity.setText("Available Capacity: " + aCapacity);
+					if(this.rcm1.getCurrentMoney() < 5.00){
+						JOptionPane.showMessageDialog(null, "RCM: " + this.rcm1.getId() + " money is getting low. Consider refilling.");
+					}
+					if((this.rcm1.getMaxWeight() - this.rcm1.getCurrentWeight()) < 5.00){
+						JOptionPane.showMessageDialog(null, "RCM: " + this.rcm1.getId() + " is getting full. Consider emptying.");
+					}
+				}
+				else if(id.equals("2")){
+
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "RCM " + id + " does not exist within this system");
+				}
+				infoIdInput.setText("ID");
 			}
 		}
 		if(e.getSource() == this.EmptyButton){
@@ -245,6 +294,9 @@ public class RMOSLeft extends JPanel implements ActionListener{
 					JOptionPane.showMessageDialog(null, "RCM " + id + " has been emptied");
 					this.rcm2.setLastEmptyDate(new Date());
 				}
+				else{
+					JOptionPane.showMessageDialog(null, "RCM " + id + " does not exist within this system");
+				}
 				emptyId.setText("ID");
 			}
 		}
@@ -262,6 +314,9 @@ public class RMOSLeft extends JPanel implements ActionListener{
 				else if(id.equals("2")){
 					this.rcm2.setCurrentMoney(this.rcm2.getRefillAmt());
 					JOptionPane.showMessageDialog(null, "RCM " + id + "'s money has been refilled to " + this.rcm2.getCurrentMoney());
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "RCM " + id + " does not exist within this system");
 				}
 				RCMMoneyRefillId.setText("ID");
 			}
@@ -288,6 +343,9 @@ public class RMOSLeft extends JPanel implements ActionListener{
 					else{
 						JOptionPane.showMessageDialog(null, "RCM " + id + " last emptied: " + this.rcm2.getLastEmptyDate());
 					}
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "RCM " + id + " does not exist within this system");
 				}
 				timeEmptyId.setText("ID");
 			}

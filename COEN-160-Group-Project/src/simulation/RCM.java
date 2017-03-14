@@ -167,6 +167,14 @@ public class RCM extends JPanel implements ActionListener {
 		this.lastEmptyDate = d;
 	}
 	
+	public String getId() {
+		return id;
+	}
+
+	public String getLocation_t() {
+		return location;
+	}
+
 	//Method to add an item -- changes: item, item selector, table
 	public void addItem(Item i){
 		items.add(i);
