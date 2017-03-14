@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 
 @SuppressWarnings("serial")
 public class RMOSLeft extends JPanel implements ActionListener{
@@ -83,7 +84,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		rcm1 = r1;
 		rcm2 = r2;
 		
-		this.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+		this.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		
 		// Add default admins
 		users.add("Julian Callin");
@@ -153,8 +154,11 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		infoIdInput.setPreferredSize(new Dimension(50, 30));
 		pounds = new JCheckBox("lbs");
 		pounds.setPreferredSize(new Dimension(75, 30));
+		pounds.addActionListener(this);
+		pounds.setSelected(true);
 		kilograms = new JCheckBox("kgs");
 		kilograms.setPreferredSize(new Dimension(75, 30));
+		kilograms.addActionListener(this);
 		getRCMInfoButton = new JButton("Get Info");
 		getRCMInfoButton.setPreferredSize(new Dimension(80, 30));
 		getRCMInfoButton.addActionListener(this);
@@ -308,11 +312,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 					String cMoney = new DecimalFormat("#.##").format(this.rcm1.getCurrentMoney());
 					infoCurrentMoney.setText("Current Money: $" + cMoney);
 					
-					//Check to see which units the user wants
-					if(pounds.isSelected() && kilograms.isSelected()){
-						JOptionPane.showMessageDialog(null, "Please select only one unit");
-					}
-					else if(pounds.isSelected()){
+					if(pounds.isSelected()){
 						String cWeight = new DecimalFormat("#.##").format(this.rcm1.getCurrentWeight());
 						infoCurrentWeight.setText("Current Weight: " + cWeight + " lbs   ");
 						String aCapacity = new DecimalFormat("#.##").format(this.rcm1.getMaxWeight()-this.rcm1.getCurrentWeight());
@@ -346,10 +346,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 					String cMoney = new DecimalFormat("#.##").format(this.rcm2.getCurrentMoney());
 					infoCurrentMoney.setText("Current Money: $" + cMoney);
 					//Check to see which units the user wants
-					if(pounds.isSelected() && kilograms.isSelected()){
-						JOptionPane.showMessageDialog(null, "Please select only one unit");
-					}
-					else if(pounds.isSelected()){
+					if(pounds.isSelected()){
 						String cWeight = new DecimalFormat("#.##").format(this.rcm2.getCurrentWeight());
 						infoCurrentWeight.setText("Current Weight: " + cWeight + " lbs   ");
 						String aCapacity = new DecimalFormat("#.##").format(this.rcm2.getMaxWeight()-this.rcm1.getCurrentWeight());
@@ -478,5 +475,15 @@ public class RMOSLeft extends JPanel implements ActionListener{
 				}
 			}
 		}
+		
+		//Make sure that only one unit box can be checked at one time
+		if(e.getSource() == this.pounds){
+			kilograms.setSelected(false);
+		}
+		
+		if(e.getSource() == this.kilograms){
+			pounds.setSelected(false);
+		}
+		
 	}
 }

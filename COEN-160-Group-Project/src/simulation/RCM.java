@@ -33,7 +33,7 @@ public class RCM extends JPanel implements ActionListener {
 	private ArrayList<Item> items;
 	private JLabel locationLabel, idLabel, fullBox, title;
 	private JComboBox<String> itemSelector;
-	private double itemWeight, currentMoneyOwed;
+	private double itemWeight, currentMoneyOwed, couponTotal;
 	private JLabel itemWeightLabel;
 	private JButton add, sessionToggle;
 	private boolean inSession;
@@ -53,6 +53,7 @@ public class RCM extends JPanel implements ActionListener {
 		items = itemsAccepted;
 		lastEmptyDate = null;
 		totalWeightProcessed = 0;
+		couponTotal = 0;
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.black, 1, true));
 		
@@ -216,7 +217,7 @@ public class RCM extends JPanel implements ActionListener {
 		model.addRow(new Object[]{i.getName(), i.getValue()});
 	}
 
-	//Method to get the row in the display table of a specific item
+	//Method to get the row in the display table of a specific item (used in changePrice)
 	public int getRow(String name){
 		int row = -1;
 		for(int i = 0; i < this.items.size(); i++){
@@ -283,10 +284,6 @@ public class RCM extends JPanel implements ActionListener {
 					//Check to see if this item can fit
 					if((currentWeight + weight) >= this.getMaxWeight()){
 						JOptionPane.showMessageDialog(null, "Insufficient capacity for this item. Please try another");
-						//this.inSession = false;
-						//JOptionPane.showMessageDialog(null, "You've received $" + this.currentMoneyOwed + " dollars");
-						//this.currentMoneyOwed = 0;
-						//this.sessionToggle.setText("Start Session");
 					}
 					else{
 						this.setCurrentWeight(currentWeight + weight);
@@ -295,15 +292,15 @@ public class RCM extends JPanel implements ActionListener {
 				
 						//Check to see if we have enough money to dispense
 						if((currentMoney - (weight*currentPrice)) <= 0){
-							JOptionPane.showMessageDialog(null, "Insufficient funds to dispense for this item. Returning item & ending session...");
-							this.inSession = false;
-							JOptionPane.showMessageDialog(null, "You've received $" + this.currentMoneyOwed + " dollars");
-							this.currentMoneyOwed = 0;
-							this.sessionToggle.setText("Start Session");
+							//Apply amount to Coupon total
+							couponTotal += weight*currentPrice;
 						}
 						else{
 							this.setCurrentMoney(currentMoney - (weight*currentPrice));
-				
+							
+							// Apply the amount added to the user's money owed
+							this.currentMoneyOwed += weight * currentPrice;
+						}
 						
 							// Use a static month for test
 							String month = "January";
@@ -314,14 +311,11 @@ public class RCM extends JPanel implements ActionListener {
 				
 							// Append to the transaction string
 							this.currentSession += month + " "+ currentMin + " " + itemName + " " + weight + "\n";
-				
-							// Apply the amount added to the user's money owed
-							this.currentMoneyOwed += weight * currentPrice;
 						
 							//Output what they deposited and their current total (truncate)
 							String tTot = new DecimalFormat("#.##").format(weight*currentPrice);
 							String tCurrentWeight = new DecimalFormat("#.##").format(weight);
-							String tCurrMoneyOwed = new DecimalFormat("#.##").format(this.currentMoneyOwed);
+							String tCurrMoneyOwed = new DecimalFormat("#.##").format(this.currentMoneyOwed+this.couponTotal);
 							JOptionPane.showMessageDialog(null, "You deposited " + tCurrentWeight + " lbs of " + itemName + " for $" + tTot + "\n Total for this Session: $" + tCurrMoneyOwed);
 						
 							// Show the current transaction status for testing
@@ -329,13 +323,11 @@ public class RCM extends JPanel implements ActionListener {
 						}
 					}
 				}
-			}
-			
-			else{
-					JOptionPane.showMessageDialog(null, "Please start a session before adding items");
 				
+				else{
+						JOptionPane.showMessageDialog(null, "Please start a session before adding items");
+				}
 			}
-		}
 		
 		else if (e.getSource() == this.sessionToggle){
 			// Start/stop a session
@@ -346,9 +338,15 @@ public class RCM extends JPanel implements ActionListener {
 			else{
 				this.inSession = false;
 				this.sessionToggle.setBackground(null);
-				// Show the user how much money they have (truncate)
-				JOptionPane.showMessageDialog(null, "You've received $" + new DecimalFormat("#.##").format(this.currentMoneyOwed) + "! Thank for being green!");
+				// Show the user how much money/coupon they have (truncate)
+				if(this.couponTotal == 0){
+					JOptionPane.showMessageDialog(null, "You've received $" + new DecimalFormat("#.##").format(this.currentMoneyOwed) + "! Thank for being green!");
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "You've received $" + new DecimalFormat("#.##").format(this.currentMoneyOwed) + " and $" + new DecimalFormat("#.##").format(this.couponTotal) + " worth of Coupons! Thanks for being green!");
+				}
 				this.currentMoneyOwed = 0;
+				this.couponTotal = 0;
 				// Write the transactions list to a file
 				writeSessionToBuffer(this.currentSession);
 				

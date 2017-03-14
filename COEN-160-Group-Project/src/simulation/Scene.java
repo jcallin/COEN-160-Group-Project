@@ -34,6 +34,7 @@ class Scene extends JFrame {
 		RCM1 = new RCM("1", "Swig", 100.00, 100.00, items);
         RCM2 = new RCM("2", "Bannan", 100.00, 100.00, items);
 		RMOS = new RMOS(RCM1, RCM2);
+	
          
         //Add buttons to the experiment layout
         container.add(RMOS);
@@ -44,6 +45,7 @@ class Scene extends JFrame {
         container.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         
         setVisible(true);
+        setResizable(false);
     }
     
 	public static void main(String[] args) {
