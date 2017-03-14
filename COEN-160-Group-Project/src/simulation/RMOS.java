@@ -5,12 +5,14 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 
 @SuppressWarnings("serial")
 public class RMOS extends JPanel implements ActionListener{
-	RMOSLeft leftPanel;
-	RMOSRight rightPanel;
+	RMOSLeft leftPanel; //Admin Monitor
+	RMOSRight rightPanel; //Data Visualization
 	public RMOS(RCM r1, RCM r2){
 		// Create a flow layout for the panel
 		super(new FlowLayout(FlowLayout.LEFT));
@@ -23,6 +25,7 @@ public class RMOS extends JPanel implements ActionListener{
 		this.add(leftPanel);
 		// Right panel is for visual analytics
 		this.add(rightPanel);
+		this.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 	}
 	
 	@Override
