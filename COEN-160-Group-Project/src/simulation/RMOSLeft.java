@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Observable;
 
 import javax.swing.JButton;
@@ -31,23 +32,41 @@ public class RMOSLeft extends JPanel implements ActionListener{
 	private boolean loggedIn;
 	
 	// Adding new item components
+	private JLabel newItemLabel;
 	private JTextField newItemName, newItemPrice;
 	private JButton newItemButton;
 	
 	// Changing existing item components
 	// private JComboBox<String> itemSelector; -- Possibly have a selector to chose which item to change price of
+	private JLabel changeItemLabel;
 	private JTextField  changeItemName, changeItemPrice;
 	private JButton changeItemButton;
 	
 	// Get RCM info components
+	private JLabel infoLabel;
 	private JTextField RCMIdInput;
 	private JButton getRCMInfoButton;
+	
+	//RCMempty components
+	private JLabel emptyLabel;
+	private JTextField emptyId;
+	private JButton EmptyButton;
+	
+	//RCMmoney refill components
+	private JLabel refillLabel;
+	private JTextField RCMMoneyRefillId;
+	private JButton moneyRefillButton;
+	
+	//Last RCMempty components
+	private JLabel timeEmptyLabel;
+	private JTextField timeEmptyId;
+	private JButton timeEmptyButton;
 	
 	public RMOSLeft(RCM r1, RCM r2){
 		// Create box layout inside for each row of buttons
 		//setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setLayout(new FlowLayout(FlowLayout.LEFT));
-		setPreferredSize(new Dimension(400,450));
+		setPreferredSize(new Dimension(450,450));
 		
 		rcm1 = r1;
 		rcm2 = r2;
@@ -70,37 +89,82 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		loggedInAs.setPreferredSize(new Dimension(390, 30));
 		this.add(loggedInAs);
 		
-		newItemName = new JTextField("New Item");
+		//Create inputs for adding new item
+		newItemLabel = new JLabel("New Item: ");
+		newItemLabel.setPreferredSize(new Dimension(70, 30));
+		newItemName = new JTextField("Name");
 		newItemName.setPreferredSize(new Dimension(130, 30));
 		newItemPrice = new JTextField("Price");
 		newItemPrice.setPreferredSize(new Dimension(100, 30));
 		newItemButton = new JButton("Add");
-		newItemButton.setPreferredSize(new Dimension(130, 30));
+		newItemButton.setPreferredSize(new Dimension(75, 30));
 		newItemButton.addActionListener(this);
-		
+		this.add(newItemLabel);
 		this.add(newItemName);
 		this.add(newItemPrice);
 		this.add(newItemButton);
 		
-		changeItemName = new JTextField("Item");
+		//Create inputs for changing price of a current item
+		changeItemLabel = new JLabel("Change Item: ");
+		changeItemLabel.setPreferredSize(new Dimension(90, 30));
+		changeItemName = new JTextField("Name");
 		changeItemName.setPreferredSize(new Dimension(130, 30));
-		changeItemPrice = new JTextField("Price");
+		changeItemPrice = new JTextField("New Price");
 		changeItemPrice.setPreferredSize(new Dimension(100, 30));
 		changeItemButton = new JButton("Change");
-		changeItemButton.setPreferredSize(new Dimension(130, 30));
+		changeItemButton.setPreferredSize(new Dimension(75, 30));
 		changeItemButton.addActionListener(this);
-		
+		this.add(changeItemLabel);
 		this.add(changeItemName);
 		this.add(changeItemPrice);
 		this.add(changeItemButton);
 		
 		// Create inputs for getting RCM info
-		RCMIdInput = new JTextField("Enter ID of RCM");
-		RCMIdInput.setPreferredSize(new Dimension(170, 30));
+		infoLabel = new JLabel("Get Info of Specific RCM: ");
+		infoLabel.setPreferredSize(new Dimension(160, 30));
+		RCMIdInput = new JTextField("ID");
+		RCMIdInput.setPreferredSize(new Dimension(80, 30));
 		getRCMInfoButton = new JButton("Get Info");
-		getRCMInfoButton.setPreferredSize(new Dimension(190, 30));
+		getRCMInfoButton.setPreferredSize(new Dimension(130, 30));
+		this.add(infoLabel);
 		this.add(RCMIdInput);
 		this.add(getRCMInfoButton);
+		
+		//RCM empty components
+		emptyLabel = new JLabel("Empty Specific RCM: ");
+		emptyLabel.setPreferredSize(new Dimension(150, 30));
+		emptyId = new JTextField("ID");
+		emptyId.setPreferredSize(new Dimension(80, 30));
+		EmptyButton = new JButton("Empty");
+		EmptyButton.setPreferredSize(new Dimension(130, 30));
+		EmptyButton.addActionListener(this);
+		this.add(emptyLabel);
+		this.add(emptyId);
+		this.add(EmptyButton);
+
+		//RCM money refill components
+		refillLabel = new JLabel("Refill a specific RCMs Funds: ");
+		refillLabel.setPreferredSize(new Dimension(200, 30));
+		RCMMoneyRefillId = new JTextField("ID");
+		RCMMoneyRefillId.setPreferredSize(new Dimension(50, 30));
+		moneyRefillButton = new JButton("Refill");
+		moneyRefillButton.setPreferredSize(new Dimension(100, 30));
+		moneyRefillButton.addActionListener(this);
+		this.add(refillLabel);
+		this.add(RCMMoneyRefillId);
+		this.add(moneyRefillButton);
+		
+		//Last time an RCM was emptied components
+		timeEmptyLabel =  new JLabel("Last time an RCM was emptied: ");
+		timeEmptyLabel.setPreferredSize(new Dimension(200, 30));
+		timeEmptyId = new JTextField("ID");
+		timeEmptyId.setPreferredSize(new Dimension(50, 30));
+		timeEmptyButton = new JButton("Get Time");
+		timeEmptyButton.setPreferredSize(new Dimension(100, 30));
+		timeEmptyButton.addActionListener(this);
+		this.add(timeEmptyLabel);
+		this.add(timeEmptyId);
+		this.add(timeEmptyButton);
 	}
 	
 	@Override
@@ -138,7 +202,8 @@ public class RMOSLeft extends JPanel implements ActionListener{
 				this.rcm2.addItem(newItem);
 			}
 		}
-		else if (e.getSource() == this.changeItemButton){
+		
+		if (e.getSource() == this.changeItemButton){
 			if(loggedIn == false){
 				JOptionPane.showMessageDialog(null, "Please login before proceeding");
 			}
@@ -156,15 +221,76 @@ public class RMOSLeft extends JPanel implements ActionListener{
 				}
 			}
 		}
-		else if (e.getSource() == this.getRCMInfoButton){
+		if (e.getSource() == this.getRCMInfoButton){
 			if(loggedIn == false){
 				JOptionPane.showMessageDialog(null, "Please login before proceeding");
 			}
 			else {
-				// Get RCM info and display in text popup
+				
+			}
+		}
+		if(e.getSource() == this.EmptyButton){
+			if(loggedIn == false){
+				JOptionPane.showMessageDialog(null, "Please login before proceeding");
+			}
+			else{
+				String id = emptyId.getText();
+				if(id.equals("1")){
+					this.rcm1.setCurrentWeight(0.0);
+					JOptionPane.showMessageDialog(null, "RCM " + id + " has been emptied");
+					this.rcm1.setLastEmptyDate(new Date());
+				}
+				else if(id.equals("2")){
+					this.rcm2.setCurrentWeight(0.0);
+					JOptionPane.showMessageDialog(null, "RCM " + id + " has been emptied");
+					this.rcm2.setLastEmptyDate(new Date());
+				}
+				emptyId.setText("ID");
 			}
 		}
 		
+		if(e.getSource() == this.moneyRefillButton){
+			if(loggedIn == false){
+				JOptionPane.showMessageDialog(null, "Please login before proceeding");
+			}
+			else{
+				String id = RCMMoneyRefillId.getText();
+				if(id.equals("1")){
+					this.rcm1.setCurrentMoney(this.rcm1.getRefillAmt());
+					JOptionPane.showMessageDialog(null, "RCM " + id + "'s money has been refilled to " + this.rcm1.getCurrentMoney());
+				}
+				else if(id.equals("2")){
+					this.rcm2.setCurrentMoney(this.rcm2.getRefillAmt());
+					JOptionPane.showMessageDialog(null, "RCM " + id + "'s money has been refilled to " + this.rcm2.getCurrentMoney());
+				}
+				RCMMoneyRefillId.setText("ID");
+			}
+		}
+		
+		if(e.getSource() == this.timeEmptyButton){
+			if(loggedIn == false){
+				JOptionPane.showMessageDialog(null, "Please login before proceeding");
+			}
+			else{
+				String id = timeEmptyId.getText();
+				if(id.equals("1")){
+					if(this.rcm1.getLastEmptyDate() == null){
+						JOptionPane.showMessageDialog(null, "This RCM has never been emptied");
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "RCM " + id + " last emptied: " + this.rcm1.getLastEmptyDate());
+					}
+				}
+				else if(id.equals("2")){
+					if(this.rcm2.getLastEmptyDate() == null){
+						JOptionPane.showMessageDialog(null, "This RCM has never been emptied");
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "RCM " + id + " last emptied: " + this.rcm2.getLastEmptyDate());
+					}
+				}
+				timeEmptyId.setText("ID");
+			}
+		}
 	}
-	
 }

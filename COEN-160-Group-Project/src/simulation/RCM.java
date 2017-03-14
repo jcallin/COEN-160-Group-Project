@@ -26,23 +26,31 @@ import javax.swing.table.DefaultTableModel;
 
 @SuppressWarnings("serial")
 public class RCM extends JPanel implements ActionListener {
-	private String stringId, stringLocation, currentSession;
+	private String id, location, currentSession;
+	private double currentWeight, currentMoney, maxWeight, refillAmt;
 	private ArrayList<Item> items;
 	//private Map<Item, Double> dict = new HashMap<Item, Double>();
-	private JLabel location, id, fullBox;
+	private JLabel locationLabel, idLabel, fullBox;
 	private JComboBox<String> itemSelector;
 	private int itemWeight, currentMoneyOwed;
 	private JLabel itemWeightLabel;
 	private JButton add, sessionToggle;
 	private boolean inSession;
 	private JTable table;
+	private Date lastEmptyDate;
 	
-	public RCM(String _id, String _location){
+	public RCM(String _id, String _location, double capacity, double totalFunds, ArrayList<Item> itemsAccepted){
 		super(new FlowLayout(FlowLayout.LEFT));
 		
 		// RCM specific
-		stringId = _id;
-		stringLocation = _location;
+		id = _id;
+		location = _location;
+		currentWeight = 0.0;
+		maxWeight = capacity;
+		currentMoney = totalFunds;
+		refillAmt = totalFunds;
+		items = itemsAccepted;
+		lastEmptyDate = null;
 		
 		// Session and recycling variables
 		itemWeight = 0;
@@ -53,20 +61,14 @@ public class RCM extends JPanel implements ActionListener {
 		currentSession = new String();
 		setPreferredSize(new Dimension(600,450));
 		
-		// Default items accepted by the RCM
-		items = new ArrayList<Item>();
-		items.add(new Item("Aluminum", 3.0, 6));
-		items.add(new Item("Copper", 3.0, 8));
-		items.add(new Item("Plastic", 5.5, 3));
-		
 		// Labels to display the ID, location, and full status of the RCM
-		id = new JLabel(_id);
-		id.setPreferredSize(new Dimension(150, 100));
-		this.add(id);
+		idLabel = new JLabel(_id);
+		idLabel.setPreferredSize(new Dimension(150, 100));
+		this.add(idLabel);
 		
-		location = new JLabel(stringLocation);
-		location.setPreferredSize(new Dimension(150, 100));
-		this.add(location);
+		locationLabel = new JLabel(location);
+		locationLabel.setPreferredSize(new Dimension(150, 100));
+		this.add(locationLabel);
 		
 		fullBox = new JLabel("Full");
 		fullBox.setPreferredSize(new Dimension(150, 100));
@@ -132,6 +134,39 @@ public class RCM extends JPanel implements ActionListener {
 		this.add(sessionToggle);
 	}
 	
+	//Setters & Getters for use by RMOS
+	public double getCurrentWeight() {
+		return currentWeight;
+	}
+
+	public void setCurrentWeight(double currentWeight) {
+		this.currentWeight = currentWeight;
+	}
+
+	public double getCurrentMoney() {
+		return currentMoney;
+	}
+
+	public void setCurrentMoney(double currentMoney) {
+		this.currentMoney = currentMoney;
+	}
+
+	public double getMaxWeight() {
+		return maxWeight;
+	}
+
+	public double getRefillAmt() {
+		return refillAmt;
+	}
+	
+	public Date getLastEmptyDate(){
+		return lastEmptyDate;
+	}
+	
+	public void setLastEmptyDate(Date d){
+		this.lastEmptyDate = d;
+	}
+	
 	//Method to add an item -- changes: item, item selector, table
 	public void addItem(Item i){
 		items.add(i);
@@ -139,7 +174,7 @@ public class RCM extends JPanel implements ActionListener {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.addRow(new Object[]{i.getName(), i.getValue()});
 	}
-	
+
 	public int getRow(String name){
 		int row = -1;
 		for(int i = 0; i < items.size(); i++){
@@ -179,13 +214,32 @@ public class RCM extends JPanel implements ActionListener {
 						break;
 					}
 				}
+				
 				// Use a random number 0-1 and multiply by average weight to get a weight for the added Item
 				double weight = Math.random() * averageWeight;
+				
 				// Round to 2 decimal places
 				weight = (double)Math.round(weight * 100d) / 100d;
 				
+				//Check to see if this item can fit
+				if((currentWeight + weight) >= this.getMaxWeight()){
+					JOptionPane.showMessageDialog(null, "Sorry this machine does not currently have the capacity to recycle this item, please end your session");
+				}
+				else{
+					this.setCurrentWeight(currentWeight + weight);
+				}
+				
+				//Check to see if we have enough money to dispense
+				if((currentMoney - (weight*currentPrice)) <= 0){
+					JOptionPane.showMessageDialog(null, "Sorry this machine does not currently have the funds to reimburse you for this item, please end your session");
+				}
+				else{
+					this.setCurrentMoney(currentMoney - (weight*currentPrice));
+				}
+				
 				// Use a static month for test
 				String month = "January";
+				
 				// Use the minute to make times unique
 				// TODO: Decide on how to represent time
 				int currentMin = calendar.get(Calendar.MINUTE); // gets hour in 24h format
@@ -229,7 +283,7 @@ public class RCM extends JPanel implements ActionListener {
 	 * @param session	String: the multi-line current session
 	 */
 	private void writeSessionToBuffer(String session){
-		String fileName = "RCM" + this.stringId + ".txt";
+		String fileName = "RCM" + this.id + ".txt";
 		try{
 			PrintWriter writer = new PrintWriter(fileName, "UTF-8");
 			writer.write(session);

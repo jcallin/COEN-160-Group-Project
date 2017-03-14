@@ -3,6 +3,7 @@ package simulation;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,9 +26,15 @@ class Scene extends JFrame {
 		Container container = getContentPane();
 		container.setLayout(new FlowLayout());
          
+		// Default items accepted by the RCM
+		ArrayList<Item> items = new ArrayList<Item>();
+		items.add(new Item("Aluminum", 3.0, 6));
+		items.add(new Item("Copper", 3.0, 8));
+		items.add(new Item("Plastic", 5.5, 3));
+		
         // Create the RMOS and RCM components
-		RCM1 = new RCM("1", "Bangkok");
-        RCM2 = new RCM("2", "The Moon");
+		RCM1 = new RCM("1", "Lower Benson", 100.00, 100.00, items);
+        RCM2 = new RCM("2", "Lucas 2nd Floor", 100.00, 100.00, items);
 		RMOS = new RMOS(RCM1, RCM2);
          
         //Add buttons to the experiment layout
