@@ -1,3 +1,4 @@
 Jan 1 Aluminum 0.05
 Jan 1 Glass 0.05
 Jan 1 Paper 0.05
+Jan 1 Paper 0.05

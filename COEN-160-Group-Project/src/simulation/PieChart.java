@@ -41,11 +41,11 @@ public class PieChart extends JPanel implements Observer {
 			System.out.println(tokenArray[2] + " --- " + tokenArray[3]);
 			lineWeight = Double.parseDouble(tokenArray[3]);
 			
-			if(this.itemTotals.containsKey(new String(tokenArray[2]))){ //Map already contains the item
-				tmpWeight = itemTotals.get(tokenArray[3]); //This can be throw NullPointer -- keep eye out
-				itemTotals.put(new String(tokenArray[2]), lineWeight + tmpWeight);
+			if(this.itemTotals.containsKey(tokenArray[2])){ //Map already contains the item, edit current Key->Value pair
+				tmpWeight = itemTotals.get(tokenArray[2]); //This can be throw NullPointer -- keep eye out
+				itemTotals.put(tokenArray[2], lineWeight + tmpWeight);
 			}
-			else{ //Map does not contain the item
+			else{ //Map does not contain the item, create new Key->Value pair
 				itemTotals.put(tokenArray[2], lineWeight);
 			}
 			
