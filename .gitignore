@@ -1,3 +1,6 @@
+# Generated .txt files
+*.txt
+
 # Java Stuff
 *.class
 
