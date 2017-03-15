@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
@@ -117,6 +118,8 @@ public class RCM extends JPanel implements ActionListener {
 	    // Set scrolling to only be vertical
 		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		table.setFillsViewportHeight(true);
+		table.setFocusable(false);
+		table.setRowSelectionAllowed(false);
 		tableContainer.setLayout(new BorderLayout());
 		tableContainer.add(table.getTableHeader(), BorderLayout.PAGE_START);
 		tableContainer.add(scrollPane, BorderLayout.CENTER);

@@ -4,38 +4,57 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
-public class RMOSRight extends JPanel{
+public class RMOSRight extends JPanel implements ActionListener{
 	private JLabel title;
-	private JPanel chart1, chart2; //Will end up being private PieChart chart1, chart2;
-
+	private JButton updateButton;
+	private PieChart chart1, chart2;
 	
-	RMOSRight(){
+	RMOSRight(RCM r1, RCM r2){
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		setPreferredSize(new Dimension(728,430));
 		//this.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
 		
 		title = new JLabel("RMOS Admin Panel", SwingConstants.CENTER);
-		title.setFont(new Font("Sans Serif", Font.PLAIN, 30));
-		title.setPreferredSize(new Dimension(400, 50));
+		title.setFont(new Font("Sans Serif", Font.PLAIN, 40));
+		title.setPreferredSize(new Dimension(450, 50));
 		
-		chart1 = new JPanel();
-		chart1.setPreferredSize(new Dimension(350, 360));
-		chart1.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+		updateButton = new JButton("Update Analytics");
+		updateButton.setPreferredSize(new Dimension(150, 30));
+		updateButton.addActionListener(this);		
 		
-		chart2 = new JPanel();
+		//RCM 1's PieChart/Panel Container
+		chart1 = new PieChart(r1);
+		chart1.setPreferredSize(new Dimension(350, 350));
+		//chart1.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+		this.add(chart1);
+		
+		chart2 = new PieChart(r2);
 		chart2.setPreferredSize(new Dimension(350, 360));
-		chart2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+		//chart2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+		this.add(chart2);
 		
 		this.add(title);
+		this.add(updateButton);
 		this.add(chart1);
 		this.add(chart2);
-		// Generate and curate analytics (loop)?
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == this.updateButton){
+			chart1.repaint();
+			chart2.repaint();
+		}
 	}
 }

@@ -13,8 +13,8 @@ import javax.swing.border.EtchedBorder;
 
 @SuppressWarnings("serial")
 public class RMOS extends JPanel implements ActionListener{
-	RMOSLeft leftPanel; //Admin Monitor
-	RMOSRight rightPanel; //Data Visualization
+	RMOSLeft leftPanel; //Admin Control
+	RMOSRight rightPanel; //Data Visualization of RCMs
 	public RMOS(RCM r1, RCM r2){
 		// Create a flow layout for the panel
 		super(new FlowLayout(FlowLayout.LEFT));
@@ -24,14 +24,13 @@ public class RMOS extends JPanel implements ActionListener{
 		
 		//setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		leftPanel = new RMOSLeft(r1, r2);
-		rightPanel = new RMOSRight();
-		
+		rightPanel = new RMOSRight(r1, r2);
+				
 		// Left panel is for RCM/RMOS administration
 		this.add(leftPanel);
 		// Right panel is for visual analytics
 		this.add(rightPanel);
 		this.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
-
 	}
 	
 	@Override

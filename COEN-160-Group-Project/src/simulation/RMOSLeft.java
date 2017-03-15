@@ -84,7 +84,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		rcm1 = r1;
 		rcm2 = r2;
 		
-		this.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+		//this.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		
 		// Add default admins
 		users.add("Julian Callin");
@@ -211,7 +211,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		this.add(mostUsedButton);
 		
 		//Get info Components
-		infoTitle = new JLabel("Info for RCM X", SwingConstants.CENTER);
+		infoTitle = new JLabel("Info Specific RCMs", SwingConstants.CENTER);
 		infoTitle.setPreferredSize(new Dimension(425, 30));
 		infoTitle.setFont(new Font("Sans Serif", Font.ITALIC, 24));
 		infoId = new JLabel("ID: ", SwingConstants.CENTER);
@@ -237,7 +237,6 @@ public class RMOSLeft extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// Login functionality
 		if (e.getSource() == this.loginButton){
-			System.out.println(this.userNameInput.getText());
 			if(loginButton.getText() == "Log Out"){
 				loggedIn = false;
 				JOptionPane.showMessageDialog(null, "Logged Out");
