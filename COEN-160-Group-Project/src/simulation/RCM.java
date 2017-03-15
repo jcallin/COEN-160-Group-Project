@@ -35,7 +35,6 @@ public class RCM extends JPanel implements ActionListener {
 	private JLabel locationLabel, idLabel, fullBox, title;
 	private JComboBox<String> itemSelector;
 	private double itemWeight, currentMoneyOwed, couponTotal;
-	private JLabel itemWeightLabel;
 	private JButton add, sessionToggle;
 	private boolean inSession;
 	private JTable table;
@@ -136,11 +135,6 @@ public class RCM extends JPanel implements ActionListener {
 		itemSelector.addActionListener(this);
 		itemSelector.setPreferredSize(new Dimension(200, 30));
 		this.add(itemSelector);
-		
-		// Create the label for weight, change content (randomized) on end session press
-		itemWeightLabel = new JLabel("Weight: " + String.valueOf(itemWeight));
-		itemWeightLabel.setPreferredSize(new Dimension(100, 30));
-		this.add(itemWeightLabel);
 		
 		// Create a button for adding a weight of a material to be recycled
 		add = new JButton("Add");

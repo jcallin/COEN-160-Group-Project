@@ -1,29 +1,35 @@
 package simulation;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
-public class RMOSRight extends JPanel implements ActionListener{
+public class RMOSRight extends JPanel implements ActionListener, Observer{
 	private JLabel title;
 	private JButton updateButton;
 	private PieChart chart1, chart2;
+	private RMOSLeft RMOSleft;
 	
-	RMOSRight(RCM r1, RCM r2){
+	RMOSRight(RCM r1, RCM r2, RMOSLeft left){
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		setPreferredSize(new Dimension(728,430));
 		//this.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+		
+		RMOSleft = left;
+		
+		RMOSleft.addObserver(this);
+		
 		
 		title = new JLabel("RMOS Admin Panel", SwingConstants.CENTER);
 		title.setFont(new Font("Sans Serif", Font.PLAIN, 40));
@@ -56,5 +62,11 @@ public class RMOSRight extends JPanel implements ActionListener{
 			chart1.repaint();
 			chart2.repaint();
 		}
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		this.chart1.repaint();
+		this.chart2.repaint();		
 	}
 }

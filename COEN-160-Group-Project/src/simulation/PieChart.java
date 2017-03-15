@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -41,29 +42,37 @@ public class PieChart extends JPanel {
 		this.add(title);
 	}
 	
-	public void loadFileIntoMap() throws IOException{
-		Scanner freader = new Scanner(fileName);
+	public void loadFileIntoMap(){
+		itemTotals.clear();
+		colorMap.clear();
+		percentages.clear();
+		Scanner freader;
+		try {
+			freader = new Scanner(fileName);
+			String line = "";
+			double tmpWeight = 0;
+			double lineWeight = 0;
+			
+			while (freader.hasNextLine()) {
+				line = freader.nextLine();
+				String []tokenArray = line.split("\\s");
+				lineWeight = Double.parseDouble(tokenArray[3]);
+				
+				if(this.itemTotals.containsKey(tokenArray[2])){ //Map already contains the item, edit current Key->Value pair
+					tmpWeight = itemTotals.get(tokenArray[2]);
+					itemTotals.put(tokenArray[2], lineWeight + tmpWeight);
+				}
+				else{ //Map does not contain the item, create new Key->Value pair
+					itemTotals.put(tokenArray[2], lineWeight);
+				}
+				
+			}
 
-		String line = "";
-		double tmpWeight = 0;
-		double lineWeight = 0;
-		
-		while (freader.hasNextLine()) {
-			line = freader.nextLine();
-			String []tokenArray = line.split("\\s");
-			lineWeight = Double.parseDouble(tokenArray[3]);
-			
-			if(this.itemTotals.containsKey(tokenArray[2])){ //Map already contains the item, edit current Key->Value pair
-				tmpWeight = itemTotals.get(tokenArray[2]);
-				itemTotals.put(tokenArray[2], lineWeight + tmpWeight);
-			}
-			else{ //Map does not contain the item, create new Key->Value pair
-				itemTotals.put(tokenArray[2], lineWeight);
-			}
-			
+		    freader.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-	    freader.close();
 	}
 	
 	//toString method to test loadFile method -- working as of 3:36pm on Tuesday
@@ -76,11 +85,7 @@ public class PieChart extends JPanel {
 	}
 	
 	public void paintComponent(Graphics g){
-		try {
-			loadFileIntoMap();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		loadFileIntoMap();
 		super.paintComponent(g);
 		drawPieChart(g);
 	    drawLegend(g);

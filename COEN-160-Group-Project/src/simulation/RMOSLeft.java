@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -78,6 +80,9 @@ public class RMOSLeft extends JPanel implements ActionListener{
 	
 	//Get Most Used Machine Button
 	private JButton mostUsedButton;
+	
+	//Observable
+	private ObservableDelegate delegate;
 	
 	public RMOSLeft(RCM r1, RCM r2){
 		// Create box layout inside for each row of buttons
@@ -238,6 +243,8 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		this.add(infoAvailableCapacity);
 		this.add(infoLastMinutes);
 		
+		delegate = new ObservableDelegate();
+		
 	}
 	
 	private double calculateIngestedLastMinutes(String RCMId, int minutes) throws IOException{
@@ -365,7 +372,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						// Get the weight ingested in the last minute
 						int lastMinutes = 1;
 						try{
-							infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + Double.toString(calculateIngestedLastMinutes("1", lastMinutes)));
+							infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + Double.toString(calculateIngestedLastMinutes("1", lastMinutes)) + " lbs");
 						}
 						catch (IOException ex) {
 								ex.printStackTrace();
@@ -382,7 +389,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						// Get the weight ingested in the last minute
 						int lastMinutes = 1;
 						try{
-							infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + Double.toString(calculateIngestedLastMinutes("1", lastMinutes)*kiloConversion));
+							infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + Double.toString(calculateIngestedLastMinutes("1", lastMinutes)*kiloConversion) + " kgs");
 						}
 						catch (IOException ex) {
 								ex.printStackTrace();
@@ -418,7 +425,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						// Get the weight ingested in the last minute
 						int lastMinutes = 1;
 						try{
-							infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + new DecimalFormat("#.##").format(calculateIngestedLastMinutes("2", lastMinutes)));
+							infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + new DecimalFormat("#.##").format(calculateIngestedLastMinutes("2", lastMinutes)) + " lbs");
 						}
 						catch (IOException ex) {
 								ex.printStackTrace();
@@ -435,7 +442,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						// Get the weight ingested in the last minute
 						int lastMinutes = 1; //Course of 1 minute for demo
 						try{
-							infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + new DecimalFormat("#.##").format(calculateIngestedLastMinutes("2", lastMinutes)*kiloConversion));
+							infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + new DecimalFormat("#.##").format(calculateIngestedLastMinutes("2", lastMinutes)*kiloConversion) + " kgs");
 						}
 						catch (IOException ex) {
 								ex.printStackTrace();
@@ -468,16 +475,34 @@ public class RMOSLeft extends JPanel implements ActionListener{
 			else{
 				String id = emptyId.getText();
 				if(id.equals("1")){
-					this.rcm1.setCurrentWeight(0.0);
-					JOptionPane.showMessageDialog(null, "RCM " + id + " has been emptied");
-					this.rcm1.setLastEmptyDate(new Date());
-					this.rcm1.changeStatusFontAfterEmpty();
+					if(this.rcm1.getCurrentWeight() != 0){
+						this.rcm1.setCurrentWeight(0.0);
+						JOptionPane.showMessageDialog(null, "RCM " + id + " has been emptied");
+						this.rcm1.setLastEmptyDate(new Date());
+						this.rcm1.changeStatusFontAfterEmpty();
+					
+						//Observer paradigm
+						delegate.setChanged();
+						delegate.notifyObservers();
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "RCM " + id + " is already empty");
+					}
 				}
 				else if(id.equals("2")){
-					this.rcm2.setCurrentWeight(0.0);
-					JOptionPane.showMessageDialog(null, "RCM " + id + " has been emptied");
-					this.rcm2.setLastEmptyDate(new Date());
-					this.rcm2.changeStatusFontAfterEmpty();
+					if(this.rcm2.getCurrentMoney() != 0){
+						this.rcm2.setCurrentWeight(0.0);
+						JOptionPane.showMessageDialog(null, "RCM " + id + " has been emptied");
+						this.rcm2.setLastEmptyDate(new Date());
+						this.rcm2.changeStatusFontAfterEmpty();
+					
+						//Observer paradigm
+						delegate.setChanged();
+						delegate.notifyObservers();
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "RCM " + id + " is already empty");
+					}
 
 				}
 				else{
@@ -569,4 +594,14 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		}
 		
 	}
+	
+	public Observable getObservable(){ 
+		return delegate;
+	}
+	
+	public void addObserver(Observer ob){ 
+		delegate.addObserver(ob);
+	}
+	
+	
 }

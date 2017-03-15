@@ -24,7 +24,7 @@ public class RMOS extends JPanel implements ActionListener{
 		
 		//setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		leftPanel = new RMOSLeft(r1, r2);
-		rightPanel = new RMOSRight(r1, r2);
+		rightPanel = new RMOSRight(r1, r2, leftPanel);
 				
 		// Left panel is for RCM/RMOS administration
 		this.add(leftPanel);
