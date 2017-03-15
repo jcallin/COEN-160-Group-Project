@@ -418,11 +418,11 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						// Get the weight ingested in the last minute
 						int lastMinutes = 1;
 						try{
-							infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + Double.toString(calculateIngestedLastMinutes("2", lastMinutes)));
+							infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + new DecimalFormat("#.##").format(calculateIngestedLastMinutes("2", lastMinutes)));
 						}
 						catch (IOException ex) {
 								ex.printStackTrace();
-								infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + 0);
+								infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + 0);
 						}
 					}
 					else if(kilograms.isSelected()){
@@ -431,14 +431,15 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						infoCurrentWeight.setText("Current: " + cWeight  + " kgs   ");
 						String aCapacity = new DecimalFormat("#.##").format((this.rcm2.getMaxWeight()-this.rcm2.getCurrentWeight())*kiloConversion);
 						infoAvailableCapacity.setText("Available: " + aCapacity + " kgs");
+						
 						// Get the weight ingested in the last minute
-						int lastMinutes = 1;
+						int lastMinutes = 1; //Course of 1 minute for demo
 						try{
-							infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + Double.toString(calculateIngestedLastMinutes("2", lastMinutes)*kiloConversion));
+							infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + new DecimalFormat("#.##").format(calculateIngestedLastMinutes("2", lastMinutes)*kiloConversion));
 						}
 						catch (IOException ex) {
 								ex.printStackTrace();
-								infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + 0);
+								infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + 0);
 						}
 					}
 					

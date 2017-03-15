@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class PieChart extends JPanel implements Observer {
+public class PieChart extends JPanel {
 	private RCM rcm;
 	private Map<String, Double> itemTotals;
 	private Map<String, Color> colorMap;
@@ -42,7 +42,6 @@ public class PieChart extends JPanel implements Observer {
 	}
 	
 	public void loadFileIntoMap() throws IOException{
-		Map<String, Double> tmp = this.itemTotals;
 		Scanner freader = new Scanner(fileName);
 
 		String line = "";
@@ -158,10 +157,4 @@ public class PieChart extends JPanel implements Observer {
 
 	      return new Color(red, green, blue);
 	}
-
-	@Override
-	public void update(Observable o, Object arg) {
-		this.paintComponent(null);
-	}
-
 }
