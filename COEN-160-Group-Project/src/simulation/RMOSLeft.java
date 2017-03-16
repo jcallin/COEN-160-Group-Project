@@ -76,7 +76,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 	private JButton timeEmptyButton;
 	
 	//Get Info Labels for output
-	private JLabel infoTitle, infoId, infoLocation, infoCurrentMoney, infoCurrentWeight, infoAvailableCapacity, infoLastMinutes;
+	private JLabel infoTitle, infoId, infoLocation, infoCurrentMoney, infoCurrentWeight, infoAvailableCapacity, infoLastMinutes, infoTime;;
 	
 	//Get Most Used Machine Button
 	private JButton mostUsedButton;
@@ -220,7 +220,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		this.add(mostUsedButton);
 		
 		//Get info Components
-		infoTitle = new JLabel("Info Specific RCMs", SwingConstants.CENTER);
+		infoTitle = new JLabel("Info for Specific RCMs", SwingConstants.CENTER);
 		infoTitle.setPreferredSize(new Dimension(425, 30));
 		infoTitle.setFont(new Font("Sans Serif", Font.ITALIC, 24));
 		infoId = new JLabel("ID: ", SwingConstants.CENTER);
@@ -228,13 +228,15 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		infoLocation = new JLabel("Location: ", SwingConstants.CENTER);
 		infoLocation.setPreferredSize(new Dimension(150, 15));
 		infoCurrentMoney = new JLabel("Current Money: ", SwingConstants.CENTER);
-		infoCurrentMoney.setPreferredSize(new Dimension(170, 15));
+		infoCurrentMoney.setPreferredSize(new Dimension(200, 15));
 		infoCurrentWeight = new JLabel("Current: ", SwingConstants.CENTER);
-		infoCurrentWeight.setPreferredSize(new Dimension(130, 15));
+		infoCurrentWeight.setPreferredSize(new Dimension(200, 15));
 		infoAvailableCapacity = new JLabel("Available: ", SwingConstants.CENTER);
 		infoAvailableCapacity.setPreferredSize(new Dimension(130, 15));
-		infoLastMinutes = new JLabel("Ingested last 5 mins: ");
-		infoLastMinutes.setPreferredSize(new Dimension(190, 15));
+		infoLastMinutes = new JLabel("Ingested Last _ Month: ", SwingConstants.CENTER);
+		infoLastMinutes.setPreferredSize(new Dimension(425, 15));
+		infoTime = new JLabel("Report From: ", SwingConstants.CENTER);
+		infoTime.setPreferredSize(new Dimension(425, 15));
 		this.add(infoTitle);
 		this.add(infoId);
 		this.add(infoLocation);
@@ -242,6 +244,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 		this.add(infoCurrentWeight);
 		this.add(infoAvailableCapacity);
 		this.add(infoLastMinutes);
+		this.add(infoTime);
 		
 		delegate = new ObservableDelegate();
 		
@@ -372,11 +375,11 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						// Get the weight ingested in the last minute
 						int lastMinutes = 1;
 						try{
-							infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + Double.toString(calculateIngestedLastMinutes("1", lastMinutes)) + " lbs");
+							infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + Double.toString(calculateIngestedLastMinutes("1", lastMinutes)) + " lbs");
 						}
 						catch (IOException ex) {
-								ex.printStackTrace();
-								infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + 0);
+							ex.printStackTrace();
+							infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + 0);
 						}
 					}
 					else if(kilograms.isSelected()){
@@ -389,13 +392,15 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						// Get the weight ingested in the last minute
 						int lastMinutes = 1;
 						try{
-							infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + Double.toString(calculateIngestedLastMinutes("1", lastMinutes)*kiloConversion) + " kgs");
+							infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + Double.toString(calculateIngestedLastMinutes("1", lastMinutes)*kiloConversion) + " kgs");
 						}
 						catch (IOException ex) {
-								ex.printStackTrace();
-								infoLastMinutes.setText("Ingested last " + lastMinutes + " mins: " + 0);
+							ex.printStackTrace();
+							infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + 0);
 						}
 					}
+					
+					infoTime.setText("Report From: " + new Date());
 					
 					
 					//If currentMoney is less than $5.00 -- recommend refill
@@ -403,9 +408,9 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						JOptionPane.showMessageDialog(null, "RCM: " + this.rcm1.getId() + " money is getting low. Consider refilling.");
 					}
 					
-					//If currentCapacity is less than 5.00 lbs -- recommend an empty
+					//If currentCapacity is less than 5.00 lbs -- RCM is full and recommend empty
 					if((this.rcm1.getMaxWeight() - this.rcm1.getCurrentWeight()) < 5.00){
-						JOptionPane.showMessageDialog(null, "RCM: " + this.rcm1.getId() + " is getting full. Consider emptying.");
+						JOptionPane.showMessageDialog(null, "RCM: " + this.rcm1.getId() + " is full or near full. Please empty.");
 					}
 				}
 				else if(id.equals("2")){
@@ -418,46 +423,48 @@ public class RMOSLeft extends JPanel implements ActionListener{
 					infoCurrentMoney.setText("Current Money: $" + cMoney);
 					//Check to see which units the user wants
 					if(pounds.isSelected()){
-						String cWeight = new DecimalFormat("#.##").format(this.rcm2.getCurrentWeight());
+						String cWeight = new DecimalFormat("##.##").format(this.rcm2.getCurrentWeight());
 						infoCurrentWeight.setText("Current: " + cWeight + " lbs   ");
-						String aCapacity = new DecimalFormat("#.##").format(this.rcm2.getMaxWeight()-this.rcm1.getCurrentWeight());
+						String aCapacity = new DecimalFormat("##.##").format(this.rcm2.getMaxWeight()-this.rcm1.getCurrentWeight());
 						infoAvailableCapacity.setText("Available: " + aCapacity + " lbs");
-						// Get the weight ingested in the last minute
-						int lastMinutes = 1;
+						//Get the weight ingested in the last minute
+						int lastMinutes = 1; //Set duration of lastMinutes for data output (ex: 1 min = 1 month for demo)
 						try{
-							infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + new DecimalFormat("#.##").format(calculateIngestedLastMinutes("2", lastMinutes)) + " lbs");
+							infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): " + new DecimalFormat("#.##").format(calculateIngestedLastMinutes("2", lastMinutes)) + " lbs");
 						}
 						catch (IOException ex) {
 								ex.printStackTrace();
-								infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + 0);
+								infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): " + 0);
 						}
 					}
 					else if(kilograms.isSelected()){
 						double kiloConversion = 0.45359237;
-						String cWeight = new DecimalFormat("#.##").format(this.rcm2.getCurrentWeight()*kiloConversion);
-						infoCurrentWeight.setText("Current: " + cWeight  + " kgs   ");
-						String aCapacity = new DecimalFormat("#.##").format((this.rcm2.getMaxWeight()-this.rcm2.getCurrentWeight())*kiloConversion);
+						String cWeight = new DecimalFormat("##.##").format(this.rcm2.getCurrentWeight()*kiloConversion);
+						infoCurrentWeight.setText("Current: " + cWeight  + " kgs");
+						String aCapacity = new DecimalFormat("##.##").format((this.rcm2.getMaxWeight()-this.rcm2.getCurrentWeight())*kiloConversion);
 						infoAvailableCapacity.setText("Available: " + aCapacity + " kgs");
 						
 						// Get the weight ingested in the last minute
 						int lastMinutes = 1; //Course of 1 minute for demo
 						try{
-							infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + new DecimalFormat("#.##").format(calculateIngestedLastMinutes("2", lastMinutes)*kiloConversion) + " kgs");
+							infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + new DecimalFormat("##.##").format(calculateIngestedLastMinutes("2", lastMinutes)*kiloConversion) + " kgs");
 						}
 						catch (IOException ex) {
 								ex.printStackTrace();
-								infoLastMinutes.setText("Ingested last " + lastMinutes + " min(s): " + 0);
+								infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + 0);
 						}
 					}
+					
+					infoTime.setText("Report From: " + new Date());
 					
 					//If currentMoney is less than $5.00 -- recommend refill
 					if(this.rcm2.getCurrentMoney() < 5.00){
 						JOptionPane.showMessageDialog(null, "RCM: " + this.rcm2.getId() + " money is getting low. Consider refilling.");
 					}
 					
-					//If currentCapacity is less than 5.00 lbs -- recommend an empty
+					//If currentCapacity is less than 5.00 lbs -- RCM is full and recommend empty
 					if((this.rcm2.getMaxWeight() - this.rcm1.getCurrentWeight()) < 5.00){
-						JOptionPane.showMessageDialog(null, "RCM: " + this.rcm2.getId() + " is getting full. Consider emptying.");
+						JOptionPane.showMessageDialog(null, "RCM: " + this.rcm2.getId() + " is full or near full. Please empty.");
 					}
 				}
 				else{
@@ -480,7 +487,6 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						JOptionPane.showMessageDialog(null, "RCM " + id + " has been emptied");
 						this.rcm1.setLastEmptyDate(new Date());
 						this.rcm1.changeStatusFontAfterEmpty();
-					
 						//Observer paradigm
 						delegate.setChanged();
 						delegate.notifyObservers();

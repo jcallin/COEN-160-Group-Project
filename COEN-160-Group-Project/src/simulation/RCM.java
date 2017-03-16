@@ -39,6 +39,7 @@ public class RCM extends JPanel implements ActionListener {
 	private boolean inSession;
 	private JTable table;
 	private Date lastEmptyDate;
+	private boolean full;
 	
 	public RCM(String _id, String _location, double capacity, double totalFunds, ArrayList<Item> itemsAccepted){
 		super(new FlowLayout(FlowLayout.LEFT));
@@ -54,6 +55,7 @@ public class RCM extends JPanel implements ActionListener {
 		lastEmptyDate = null;
 		totalWeightProcessed = 0;
 		couponTotal = 0;
+		full = false;
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.black, 1, true));
 		
@@ -205,10 +207,22 @@ public class RCM extends JPanel implements ActionListener {
 	public int getItemsSize(){
 		return items.size();
 	}
+	
+	public boolean isFull(){
+		if(this.full == false){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 
 	//Method to add an item -- changes: item, item selector, table
 	public void addItem(Item i){
+		//Add item to items Array
 		items.add(i);
+		
+		//Add Item to UI
 		itemSelector.addItem(i.getName());
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.addRow(new Object[]{i.getName(), i.getValue()});
@@ -238,6 +252,8 @@ public class RCM extends JPanel implements ActionListener {
 	
 	public void changeStatusFontAfterEmpty(){
 		this.fullBox.setForeground(Color.GREEN);
+		this.fullBox.setText("OPEN");
+		this.full = false;
 	}
 	
 	@Override
@@ -251,7 +267,7 @@ public class RCM extends JPanel implements ActionListener {
 		// TODO Auto-generated method stub
 		if (e.getSource() == this.add){
 			if(this.inSession){
-				if(this.currentWeight >= this.maxWeight){
+				if(full){
 					JOptionPane.showMessageDialog(null, "RCM is at capacity. Please contact Admin to empty");
 					fullBox.setForeground(Color.red);
 					fullBox.setText("FULL");
@@ -280,7 +296,26 @@ public class RCM extends JPanel implements ActionListener {
 				
 					//Check to see if this item can fit
 					if((currentWeight + weight) >= this.getMaxWeight()){
-						JOptionPane.showMessageDialog(null, "Insufficient capacity for this item. Please try another");
+						JOptionPane.showMessageDialog(null, "Insufficient capacity for this item. RCM full. Ending session...");
+						full = true;
+						this.fullBox.setForeground(Color.RED);
+						this.fullBox.setText("FULL");
+						this.inSession = false;
+						this.sessionToggle.setBackground(null);
+						// Show the user how much money/coupon they have (truncate)
+						if(this.couponTotal == 0){
+							JOptionPane.showMessageDialog(null, "You've received $" + new DecimalFormat("#.##").format(this.currentMoneyOwed) + "! Thank for being green!");
+						}
+						else{
+							JOptionPane.showMessageDialog(null, "You've received $" + new DecimalFormat("#.##").format(this.currentMoneyOwed) + " and $" + new DecimalFormat("#.##").format(this.couponTotal) + " worth of Coupons! Thanks for being green!");
+						}
+						this.currentMoneyOwed = 0;
+						this.couponTotal = 0;
+						// Write the transactions list to a file
+						writeSessionToBuffer(this.currentSession);
+						
+						//Switch button text back to Start Session once a session is completed
+						this.sessionToggle.setText("Start Session");
 					}
 					else{
 						this.setCurrentWeight(currentWeight + weight);
@@ -307,7 +342,7 @@ public class RCM extends JPanel implements ActionListener {
 							int currentMin = calendar.get(Calendar.MINUTE); // gets hour in 24h format
 				
 							// Append to the transaction string
-							this.currentSession += month + " "+ currentMin + " " + itemName + " " + weight + "\n";
+							this.currentSession += month + " " + currentMin + " " + itemName + " " + weight + "\n";
 						
 							//Output what they deposited and their current total (truncate)
 							String tTot = new DecimalFormat("#.##").format(weight*currentPrice);
@@ -329,8 +364,13 @@ public class RCM extends JPanel implements ActionListener {
 		else if (e.getSource() == this.sessionToggle){
 			// Start/stop a session
 			if(!this.inSession){
-				this.inSession = true;
-				this.sessionToggle.setText("Stop Session");
+				if(full = false){
+					JOptionPane.showMessageDialog(null, "RCM " + this.getId() + " is at capacity. Can't start session. Contact Admin to empty");
+				}
+				else{
+					this.inSession = true;
+					this.sessionToggle.setText("Stop Session");
+				}
 			}
 			else{
 				this.inSession = false;

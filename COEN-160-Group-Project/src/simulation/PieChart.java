@@ -7,12 +7,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Scanner;
 
 import javax.swing.JLabel;
@@ -25,8 +22,7 @@ public class PieChart extends JPanel {
 	private Map<String, Color> colorMap;
 	private Map<String, String> percentages;
 	private File fileName;
-	private JLabel title;
-	
+	private JLabel title;	
 	
 	public PieChart(RCM _rcm){
 		rcm = _rcm;
@@ -34,7 +30,6 @@ public class PieChart extends JPanel {
 		itemTotals = new HashMap<String, Double>();
 		colorMap = new HashMap<String, Color>();
 		percentages = new HashMap<String, String>();
-
 		
 		title = new JLabel("RCM: " + this.rcm.getId());
 		title.setFont(new Font("New Courier", Font.ITALIC, 22));
@@ -44,7 +39,7 @@ public class PieChart extends JPanel {
 	
 	public void loadFileIntoMap(){
 		itemTotals.clear();
-		colorMap.clear();
+		//colorMap.clear();
 		percentages.clear();
 		Scanner freader;
 		try {
@@ -109,12 +104,17 @@ public class PieChart extends JPanel {
 	         arcAngle = (int)Math.round(percentage*360);
 
 	         //Set Color and load color into colorMap hashmap to be used by Draw Legend
-	         Color tmp = this.getRandomColor();
-	         colorMap.put(name, tmp);
-	         g.setColor(colorMap.get(name));
+	         if(!(colorMap.containsKey(name))){
+	        	 Color tmp = getRandomColor();
+	        	 colorMap.put(name, tmp);
+	        	 g.setColor(colorMap.get(name));
+	         }
+	         else{
+	        	 g.setColor(colorMap.get(name));
+	         }
 
 	         // draw Account pie wedge
-	         g.fillArc(5, 30, 300, 300, startAngle, arcAngle);
+	         g.fillArc(5, 30, 280, 280, startAngle, arcAngle);
 	         
 	         startAngle += arcAngle;
 		}
@@ -130,8 +130,8 @@ public class PieChart extends JPanel {
 		FontMetrics metrics = getFontMetrics(font);
 		int ascent = metrics.getMaxAscent();
 		int offsetY = ascent + 5;
-		int verticalPos = 19;
-		int horizontalPos = 220;
+		int verticalPos = 17;
+		int horizontalPos = 235;
 		// draw description for each Account	
 		for (String name: this.itemTotals.keySet()){
 			verticalPos++;
@@ -141,7 +141,7 @@ public class PieChart extends JPanel {
 
 			// draw Account name next to color swatch
 			g.setColor(Color.black);
-			g.drawString(name + " - " + percentages.get(name) + "%", horizontalPos+15, offsetY * verticalPos + ascent );
+			g.drawString(name + "-" + percentages.get(name) + "%", horizontalPos+15, offsetY * verticalPos + ascent );
 	      }
 	   }
 	
@@ -160,6 +160,6 @@ public class PieChart extends JPanel {
 		int green = (int)(Math.random()*256);
 		int blue = (int)(Math.random()*256);
 
-	      return new Color(red, green, blue);
+	    return new Color(red, green, blue);
 	}
 }
