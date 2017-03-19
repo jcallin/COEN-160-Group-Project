@@ -50,7 +50,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 	// Changing existing item components
 	private JLabel changeItemLabel;
 	//private JTextField  changeItemName
-	private JComboBox changeItemSelector;
+	private JComboBox<String> changeItemSelector;
 	private JTextField changeItemPrice;
 	private JButton changeItemButton;
 	
@@ -379,7 +379,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						}
 						catch (IOException ex) {
 							ex.printStackTrace();
-							infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + 0);
+							infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + 0 + " lbs");
 						}
 					}
 					else if(kilograms.isSelected()){
@@ -396,7 +396,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						}
 						catch (IOException ex) {
 							ex.printStackTrace();
-							infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + 0);
+							infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + 0 + " kgs");
 						}
 					}
 					
@@ -434,7 +434,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						}
 						catch (IOException ex) {
 								ex.printStackTrace();
-								infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): " + 0);
+								infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): " + 0 + " lbs");
 						}
 					}
 					else if(kilograms.isSelected()){
@@ -451,7 +451,7 @@ public class RMOSLeft extends JPanel implements ActionListener{
 						}
 						catch (IOException ex) {
 								ex.printStackTrace();
-								infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + 0);
+								infoLastMinutes.setText("Ingested in Last " + lastMinutes + " Month(s): "  + 0 + " kgs");
 						}
 					}
 					

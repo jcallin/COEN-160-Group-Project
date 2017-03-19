@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-/**
- * Class TextFieldDemo, The main window for the application, holding the 1 RCM and 2 RMOS
- * @author Julian Callin
- */
 @SuppressWarnings("serial")
 class Scene extends JFrame {
 	// Declarations
